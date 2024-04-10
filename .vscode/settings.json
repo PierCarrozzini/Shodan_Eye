@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/ec3ff472-adcf-4f26-8e38-53bd658da5d6/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ShodanEye",
+    "appService.deploySubpath": "."
+}
