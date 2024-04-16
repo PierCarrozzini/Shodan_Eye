@@ -1,0 +1,35 @@
+<!doctype html>
+<head>
+    <title>Shodan-Eye Vulnerability Scanning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+</head>
+<html>
+    <body>
+        <div class="centrato"> 
+            <img src="{{ url_for('static', filename='images/images.png') }}" alt="Image Description" width="224" height="192">
+            <h1 class="centrato">Shodan-Eye</h1>
+        </div>
+
+        <div class="contenuto"> 
+            <ul>
+                <h2>ME:</h2>
+                <br>
+          
+                <ul>
+                    <li><strong>IP:</strong> {{ device_info['ip'] }}</li>
+                    <br>
+                    <li><strong>OPEN PORTS:</strong> {{ device_info['port'] }}</li> 
+                    <br>
+                    <li><strong>Vulnerabilities:</strong> {{ device_info['vulnerabilities'] }}</li>
+                    <br>
+                </ul>
+                   
+            </ul>       
+        </div>
+        <div class="backbutton"> 
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>
+    </div>
+    </body>
+
+</html>

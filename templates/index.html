@@ -22,8 +22,44 @@
         <label for="name" class="form-label fw-bold fs-5">Immetti la tua query!</label>
         <br>
         <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Search</button>
-    </form>
+        </form>
 
+        <br>
+        <br>
+
+        <form action="/results_geo" method="post">
+        <label for="name" class="form-label fw-bold fs-5">Click here for searching around me!</label>
+        <label for="expires">Range di km:</label> 
+        <input type="text" id="range" name="range" required> 
+        <br>
+        <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">AROUND ME!</button>
+        </form>
+
+        <br>
+        <br>
+
+        <form action="/results_me" method="post">
+            <label for="name" class="form-label fw-bold fs-5">Click here for searching about me!</label>
+            <br>
+            <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">ME!</button>
+            </form>
+
+            <br>
+            <br>
+            <br>
+            <form action="/create_alert" method="post">
+                 
+                    <label for="name">Nome Alert:</label> 
+                    <input type="text" id="name" name="name" required> 
+             
+                    <label for="net">Rete:</label> 
+                    <input type="text" id="net" name="net" required> 
+             
+                    <label for="expires">Tempo di scadenza (minuti):</label> 
+                    <input type="number" id="expires" name="expires" min="1" value="60" required> 
+             
+                    <button type="submit">Crea Alert</button> 
+                </form> 
     <br>
     <div class="info"> 
         <img src="{{ url_for('static', filename='images/info.png') }}" alt="Image info" width="50" height="50">
