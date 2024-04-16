@@ -12,16 +12,20 @@
         </div>
 
         <div class="contenuto"> 
-            {% if results %}
-            <h2>Search Results:</h2>
             <ul>
-                {% for result in results %}
-                <li>{{ result.ip_str }}{% if result.portinfo %} - {{ result.portinfo.port }}{% endif %}</li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>No results found.</p>
-            {% endif %}        
+                <h2>Results:</h2>
+                <br>
+          
+                <ul>
+                    <li><strong>IP:</strong> {{ device_info['ip'] }}</li>
+                    <br>
+                    <li><strong>OPEN PORTS:</strong> {{ device_info['port'] }}</li> 
+                    <br>
+                    <li><strong>Vulnerabilities:</strong> {{ device_info['vulnerabilities'] }}</li>
+                    <br>
+                </ul>
+                   
+            </ul>       
         </div>
         <div class="backbutton"> 
         <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>

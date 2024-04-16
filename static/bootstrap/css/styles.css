@@ -1,0 +1,36 @@
+body, html {
+    height: 100%; /* Imposta l'altezza del corpo e dell'html al 100% */
+    margin: 0;
+    padding: 0;
+}
+  
+.contenitore {
+    display: flex;
+    flex-direction: column;
+    
+}
+  
+.centrato {
+    margin-top: 0; /* Spinge il titolo verso l'alto */
+    text-align: center;
+}
+
+.contenuto {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.searchbar {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.backbutton {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.info {
+    margin-top: 100px;
+    text-align: center;
+}

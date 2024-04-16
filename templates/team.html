@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Contacts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+</head>
+<body>
+    <div class="centrato"> 
+        <h1>Shodan-Eye Web App Project</h1>
+    </div>
+    <p>Contact information for our team members:</p>
+    <br> 
+    <!-- Add team member information here -->
+    <p> Orlando De Bernardis</p>
+    <br>
+    <p> Pierantonio Carrozzini</p>
+    <br>
+    <p> Luca Sambuchi</p>
+
+    <div class="info">
+        <img src="{{ url_for('static', filename='images/git.png') }}" alt="Image git" width="50" height="50"> 
+        <a href="https://github.com/PierCarrozzini/Shodan_Eye">Shodan-Eye GitHub Link</a>
+    </div>
+
+    <div class="backbutton"> 
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>
+    </div>
+</body>
+</html>
