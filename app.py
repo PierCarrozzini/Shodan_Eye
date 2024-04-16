@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import requests
 import shodan
 import geocoder 
+import subprocess
 
 url = 'https://api.ipify.org?format=json' #to retrieve public ip_addr 
 
@@ -27,7 +28,7 @@ location = g.latlng
 # Estrai latitudine e longitudine
 latitudine = location[0]
 longitudine = location[1]
-print(latitudine, longitudine)
+#print(latitudine, longitudine)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -42,11 +43,13 @@ def get_device_info(ip_address):
     try:
         host = api.host(ip_address)
        
-        print(host)  # Stampa le informazioni sull'host per il debug
+        #print(host)  # Stampa le informazioni sull'host per il debug
 
+        """ 
         vulnerabilities = []
         for vulnerability in host['vulns']:
             print(vulnerability)  # Stampa ogni vulnerabilità per il debug
+        """
             
 
         return {
@@ -55,6 +58,23 @@ def get_device_info(ip_address):
             'data': host['data'],
             'vulnerabilities': host['vulns']
         }
+    except shodan.APIError as e:
+        return {'error': str(e)}
+
+
+def get_me_info(ip_address):
+    try:
+        host = api.host(ip_address)
+       
+        #print(host)  # Stampa le informazioni sull'host per il debug
+
+        return {
+            'ip': host['ip_str'],
+            'port': host['ports'],
+            'data': host['data'],
+            'vulnerabilities': host['vulns']
+        }
+    
     except shodan.APIError as e:
         return {'error': str(e)}
 
@@ -82,7 +102,7 @@ def me_info():
         print(ip_address)
 
         # Otteniamo informazioni dettagliate sul dispositivo
-        device_info = get_device_info(ip_address)
+        device_info = get_me_info(ip_address)
         
 
         return render_template('results_me.html', device_info=device_info)
@@ -135,6 +155,9 @@ def search():
 
 @app.route('/create_alert', methods=['POST']) 
 def create_alert(): 
+
+    command = 'shodan alert enable  new_service,malware,open_database,iot,vulnerable,ssl_expired,industrial_control_system,internet_scanner'
+
     if request.method == 'POST': 
         name = request.form['name'] 
         net = request.form['net'] 
@@ -142,28 +165,24 @@ def create_alert():
  
         try: 
             alert = api.create_alert(name, net, expires=expires) 
-            return {'message': f"Alert '{name}' creato con successo."} 
+            command = f'shodan alert enable {alert['id']} new_service,malware,open_database,iot,vulnerable,ssl_expired,industrial_control_system,internet_scanner'
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            print(f"Comando eseguito con successo:\n{result.stdout}")
+            return {'message': f"Alert '{alert['id']}' creato con successo."} 
+            
         except shodan.APIError as e: 
             return {'error': str(e)} 
      
+
     if alert: 
-        message = f"Alert '{name}' creato con successo. Email di notifica inviata." 
+        message = f"Alert '{name}' creato con successo.\n" 
         return render_template('create_alert.html', message=message) 
     else: 
         error = str(e) 
         return render_template('create_alert.html', error=error)
 
+    
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
 
-
-"""
-
-ALLORA SEARCH -> PER SCANSIONE DI TUTTI I DISPOSITIVI 
-
-IN PIU' SI IMPLEMENTA LA RICERCA SUL PROPRIO DEVICE 
-
-E POI IL SISTEMA DI ALERT IN DIRETTA!! 
-
-"""
