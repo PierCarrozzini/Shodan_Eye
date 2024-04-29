@@ -3,6 +3,33 @@ import requests
 import shodan
 import geocoder 
 import subprocess
+import psycopg2
+
+######################################################  TEST  #############
+# Connect to the database 
+conn = psycopg2.connect(database="flask_db", user="postgres", 
+                        password="postgres", host="localhost", port="5432") 
+  
+# create a cursor 
+cur = conn.cursor() 
+  
+# if you already have any table or not id doesnt matter this  
+# will create a products table for you. 
+cur.execute( 
+    '''CREATE TABLE IF NOT EXISTS products (id serial PRIMARY KEY, name varchar(100), price float);''') 
+  
+# Insert some data into the table 
+cur.execute( 
+    '''INSERT INTO products (name, price) VALUES ('Apple', 1.99), ('Orange', 0.99), ('Banana', 0.59);''') 
+  
+# commit the changes 
+conn.commit() 
+  
+# close the cursor and connection 
+cur.close() 
+conn.close() 
+
+######################################################  FINE TEST  #############
 
 url = 'https://api.ipify.org?format=json' #to retrieve public ip_addr 
 
