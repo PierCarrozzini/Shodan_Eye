@@ -3,33 +3,6 @@ import requests
 import shodan
 import geocoder 
 import subprocess
-import psycopg2
-
-######################################################  TEST  #############
-# Connect to the database 
-conn = psycopg2.connect(database="flask_db", user="postgres", 
-                        password="postgres", host="localhost", port="5432") 
-  
-# create a cursor 
-cur = conn.cursor() 
-  
-# if you already have any table or not id doesnt matter this  
-# will create a products table for you. 
-cur.execute( 
-    '''CREATE TABLE IF NOT EXISTS products (id serial PRIMARY KEY, name varchar(100), price float);''') 
-  
-# Insert some data into the table 
-cur.execute( 
-    '''INSERT INTO products (name, price) VALUES ('Apple', 1.99), ('Orange', 0.99), ('Banana', 0.59);''') 
-  
-# commit the changes 
-conn.commit() 
-  
-# close the cursor and connection 
-cur.close() 
-conn.close() 
-
-######################################################  FINE TEST  #############
 
 url = 'https://api.ipify.org?format=json' #to retrieve public ip_addr 
 
@@ -71,20 +44,107 @@ def get_device_info(ip_address):
         host = api.host(ip_address)
        
         #print(host)  # Stampa le informazioni sull'host per il debug
+        #chiavi = host.keys() 
+        #print(chiavi)
+
+       
+        vuln = {}
+
+        indexes = len(host['data'])
+
+        for i in range(indexes): 
+            lista_vuln = list(host['data'][i].keys())
+            for j in (lista_vuln): 
+                if j == 'vulns':
+                    print(host['data'][i][j].keys())
+                    for vul in host['vulns']:
+                        reference = []
+                        print("VULN_ID: ", vul)
+                        print("\n")
+                        print("SUMMARY: ", host['data'][i][j][vul]['summary'])
+                        print("\n")
+                        print("CVSS: ",host['data'][i][j][vul]['cvss'] )
+                        print("\n")
+                        for ref in range(len(host['data'][i][j][vul]['references'])):
+                            #print("REFERENCES: ",host['data'][i][j][vul]['references'][ref])
+                            #print("\n")
+                            reference.append(host['data'][i][j][vul]['references'][ref])
+                        #vuln[vul] = [host['data'][i][j][vul]['summary'],host['data'][i][j][vul]['cvss'],host['data'][i][j][vul]['references'] ]
+                        vuln[vul] = [host['data'][i][j][vul]['summary'],host['data'][i][j][vul]['cvss'],reference]
+                        #print(reference)
+            #print(lista_vuln)
+            #for j in lista_vuln: 
+            #    print(host['data'][i]['vulns'][j])
+                
+           
+        
+        #lista_vuln = list(host['data'][-1]['vulns'].keys())
+        """ 
+        for vulnerability in host['vulns']:
+            #print(vulnerability)
+            for j in lista_vuln:
+                vuln[vulnerability] = host['data'][-1]['vulns'][j]['summary'] 
+        """
+               
+        
+        #print(vuln)  # Stampa ogni vulnerabilità per il debug
+        
 
         """ 
-        vulnerabilities = []
-        for vulnerability in host['vulns']:
-            print(vulnerability)  # Stampa ogni vulnerabilità per il debug
+        #cheis = (host['data'][1]['vulns'].keys())
+        for i in  host['data']:
+            #print(i)
+            #print(host['data'][-1]['vulns'].keys())
+            lista_vuln = list(host['data'][-1]['vulns'].keys())
+            for j in lista_vuln:
+                vuln = {'Vuln_ID:' }
+                #print("VULN_ID : ", j)
+                #print("\n")
+                #print("SUMMARY: ",host['data'][-1]['vulns'][j]['summary'])
+                return {
+                    'ip': host['ip_str'],
+                    'port': host['ports'],
+                    'country_name' : host['country_name'],
+                    'city' : host['city'],
+                    'os' : host['os'],
+                    'domains' : host['domains'],
+                    'vulnerabilities': host['vulns'],
+                    'Vuln_ID': j,
+                    'summary' : host['data'][-1]['vulns'][j]['summary'],
+                    
+                 }
         """
-            
+        return {
+                    'ip': host['ip_str'],
+                    'port': host['ports'],
+                    'country_name' : host['country_name'],
+                    'city' : host['city'],
+                    'os' : host['os'],
+                    'domains' : host['domains'],
+                    'vulnerabilities': host['vulns']
+                 }, vuln
+        #cheis = host['data']
+        #print(cheis)
+        
+        """ 
+        keys = list(host['data'][3]['vulns'].keys())
+        print(keys)
+        for i in keys: 
+            #print(host['data'][3]['vulns'][i])
+            print(host['data'][3]['vulns'][i]['summary'])
+        
 
         return {
             'ip': host['ip_str'],
             'port': host['ports'],
+            'country_name' : host['country_name'],
+            'city' : host['city'],
+            'os' : host['os'],
+            'domains' : host['domains'],
+            'vulnerabilities': host['vulns'],
             'data': host['data'],
-            'vulnerabilities': host['vulns']
         }
+        """
     except shodan.APIError as e:
         return {'error': str(e)}
 
@@ -114,10 +174,10 @@ def device_info():
         ip_address = request.form['ip_address']
 
         # Otteniamo informazioni dettagliate sul dispositivo
-        device_info = get_device_info(ip_address)
+        device_info, vuln = get_device_info(ip_address)
         
 
-        return render_template('results.html', device_info=device_info)
+        return render_template('results.html', device_info=device_info, context = vuln)
 
     return render_template('index.html')
 

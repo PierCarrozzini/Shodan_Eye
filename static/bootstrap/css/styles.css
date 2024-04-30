@@ -34,3 +34,48 @@ body, html {
     margin-top: 100px;
     text-align: center;
 }
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+
+th, td{
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+th {
+    background-color: #4CAF50;
+    color: white
+}
+a {
+    color: #008CBA;
+    text-decoration: None;
+}
+
+
+table th#id {
+    width: 180px !important;
+    white-space: nowrap; 
+    }
+
+table th#summary {
+    width: 300px !important; 
+    font-size: 0.5 em !important;
+}
+
+table th#reference {
+        width: 10% !important;
+        font-size: 0.2 em !important;
+}
+
+table th#reference-container {
+    max-height: 50px !important; 
+    overflow-y: auto !important;
+}
