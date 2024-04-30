@@ -20,8 +20,8 @@ if response.status_code == 200:
 else:
     print("Richiesta fallita.")
 
-#get the geotag of the device
 
+#geotag
 g = geocoder.ip(public_ip)
 # Ottieni l'oggetto Location
 location = g.latlng
