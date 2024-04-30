@@ -13,21 +13,42 @@
 
         <div class="contenuto"> 
             <ul>
-                <h2>Results based on Geo-Tag:</h2>
-                <br>
-          
-                {% if results %}
-                <h2>Search Results:</h2>
-                <ul>
-                    {% for result in results %}
-                    <li>{{ result.ip_str }}{% if result.portinfo %} - {{ result.portinfo.port }}{% endif %}</li>
+                <h1>Dettagli Vulnerabilità nel range selezionato:</h1>
+                {% for device_info in devices %}
+                <p><strong>Indirizzo IP:</strong> {{ device_info.ip }}</p>
+                <p><strong>Porta:</strong> {{ device_info.port }}</p>
+                <p><strong>Paese:</strong> {{ device_info.country_name }}</p>
+                <p><strong>Città:</strong> {{ device_info.city }}</p>
+                <p><strong>Sistema Operativo:</strong> {{ device_info.os }}</p>
+                <p><strong>Domini:</strong> {{ device_info.domains }}</p>
+                
+                
+                <h1> VULNS: </h1>
+                <table> 
+                    <tr>
+                        <th id="id">ID: </th>
+                        <th id="summary">SUMMARY: </th>
+                        <th>CVSS: </th>
+                        <th id="reference">REFERENCE: </th>
+                    </tr>
+                    {% for id, elemento in context.items() %}
+                    <tr>
+                        <td><strong>{{ id }} </strong></td>
+                        <td><strong>{{elemento[0]}}</strong></td>
+                        <td><strong>{{elemento[1]}}</strong></td>
+                        <td>
+                            <div id="reference-container"> 
+                            {% for reference in elemento[2] %}
+                            <a href="{{ reference}}" >{{reference}}</a><br>
+                            {% endfor %}
+                        </div>
+                        </td>
+                    </tr>
                     {% endfor %}
-                </ul>
-                {% else %}
-                <p>No results found.</p>
-                {% endif %}        
-                   
-            </ul>       
+                </table>
+                {% endfor %}
+                
+        </ul>       
         </div>
         <div class="backbutton"> 
         <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>
