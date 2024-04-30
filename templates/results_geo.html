@@ -14,41 +14,32 @@
         <div class="contenuto"> 
             <ul>
                 <h1>Dettagli Vulnerabilità nel range selezionato:</h1>
-                {% for device_info in devices %}
-                <p><strong>Indirizzo IP:</strong> {{ device_info.ip }}</p>
-                <p><strong>Porta:</strong> {{ device_info.port }}</p>
-                <p><strong>Paese:</strong> {{ device_info.country_name }}</p>
-                <p><strong>Città:</strong> {{ device_info.city }}</p>
-                <p><strong>Sistema Operativo:</strong> {{ device_info.os }}</p>
-                <p><strong>Domini:</strong> {{ device_info.domains }}</p>
                 
-                
-                <h1> VULNS: </h1>
                 <table> 
                     <tr>
-                        <th id="id">ID: </th>
-                        <th id="summary">SUMMARY: </th>
-                        <th>CVSS: </th>
-                        <th id="reference">REFERENCE: </th>
+                        <th>IP: </th>
+                        <th>PORT:</th>
+                        <th>OS:</th>
+                        <th>LOCATION:</th>
+                        <th>VULNERABILITIES:</th>
                     </tr>
-                    {% for id, elemento in context.items() %}
+                    {% for device_info in devices %}
                     <tr>
-                        <td><strong>{{ id }} </strong></td>
-                        <td><strong>{{elemento[0]}}</strong></td>
-                        <td><strong>{{elemento[1]}}</strong></td>
+                        <td><strong>  {{ device_info.ip }} </strong></td>
+                        <td><strong>  {{ device_info.port }} </strong></td>
+                        <td><strong>  {{ device_info.os }} </strong></td>
+                        <td><strong>  {{ device_info.location }} </strong></td>
                         <td>
-                            <div id="reference-container"> 
-                            {% for reference in elemento[2] %}
-                            <a href="{{ reference}}" >{{reference}}</a><br>
+                            
+                            {% for vuln in device_info.vulnerabilities %}
+                            {{vuln}}
                             {% endfor %}
-                        </div>
+                        
                         </td>
                     </tr>
                     {% endfor %}
                 </table>
-                {% endfor %}
-                
-        </ul>       
+        </ul>   
         </div>
         <div class="backbutton"> 
         <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>

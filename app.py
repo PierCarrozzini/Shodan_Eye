@@ -237,7 +237,8 @@ def search():
         return ({'error': 'Latitude and longitude parameters are required'}), 400
     
     devices = shodan_search(latitude, longitude)
-    return (devices)
+    #return (devices)
+    return render_template('results_geo.html', devices=devices)
 
 
 @app.route('/create_alert', methods=['POST']) 
