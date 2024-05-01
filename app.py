@@ -16,11 +16,11 @@ cur = conn.cursor()
 # if you already have any table or not id doesnt matter this  
 # will create a products table for you. 
 cur.execute( 
-    '''CREATE TABLE IF NOT EXISTS products (id serial PRIMARY KEY, name varchar(100), price float);''') 
+    '''CREATE TABLE IF NOT EXISTS history (id serial PRIMARY KEY, ip_address inet);''') 
   
 # Insert some data into the table 
 cur.execute( 
-    '''INSERT INTO products (name, price) VALUES ('Apple', 1.99), ('Orange', 0.99), ('Banana', 0.59);''') 
+    '''INSERT INTO history (ip_address) VALUES ('192.168.1.1'::INET);''') 
   
 # commit the changes 
 conn.commit() 
@@ -130,11 +130,25 @@ def me_info():
 
         # Otteniamo informazioni dettagliate sul dispositivo
         device_info = get_me_info(ip_address)
-        
-
+        #salva l'ip sulla tabella history di postgres
+        save_ip(device_info['ip'])
         return render_template('results_me.html', device_info=device_info)
 
     return render_template('index.html')
+
+def save_ip(ip):
+    # create a cursor 
+    cur = conn.cursor() 
+
+    # Insert some data into the table 
+    cur.execute( '''INSERT INTO history (ip_address) VALUES ({ip}::INET);''') 
+  
+    # commit the changes 
+    conn.commit() 
+  
+    # close the cursor and connection 
+    cur.close() 
+    conn.close() 
 
 def shodan_search(latitude, longitude):
     try:
