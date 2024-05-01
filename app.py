@@ -47,8 +47,8 @@ if response.status_code == 200:
 else:
     print("Richiesta fallita.")
 
-#get the geotag of the device
 
+#geotag
 g = geocoder.ip(public_ip)
 # Ottieni l'oggetto Location
 location = g.latlng
@@ -71,20 +71,107 @@ def get_device_info(ip_address):
         host = api.host(ip_address)
        
         #print(host)  # Stampa le informazioni sull'host per il debug
+        #chiavi = host.keys() 
+        #print(chiavi)
+
+       
+        vuln = {}
+
+        indexes = len(host['data'])
+
+        for i in range(indexes): 
+            lista_vuln = list(host['data'][i].keys())
+            for j in (lista_vuln): 
+                if j == 'vulns':
+                    print(host['data'][i][j].keys())
+                    for vul in host['vulns']:
+                        reference = []
+                        print("VULN_ID: ", vul)
+                        print("\n")
+                        print("SUMMARY: ", host['data'][i][j][vul]['summary'])
+                        print("\n")
+                        print("CVSS: ",host['data'][i][j][vul]['cvss'] )
+                        print("\n")
+                        for ref in range(len(host['data'][i][j][vul]['references'])):
+                            #print("REFERENCES: ",host['data'][i][j][vul]['references'][ref])
+                            #print("\n")
+                            reference.append(host['data'][i][j][vul]['references'][ref])
+                        #vuln[vul] = [host['data'][i][j][vul]['summary'],host['data'][i][j][vul]['cvss'],host['data'][i][j][vul]['references'] ]
+                        vuln[vul] = [host['data'][i][j][vul]['summary'],host['data'][i][j][vul]['cvss'],reference]
+                        #print(reference)
+            #print(lista_vuln)
+            #for j in lista_vuln: 
+            #    print(host['data'][i]['vulns'][j])
+                
+           
+        
+        #lista_vuln = list(host['data'][-1]['vulns'].keys())
+        """ 
+        for vulnerability in host['vulns']:
+            #print(vulnerability)
+            for j in lista_vuln:
+                vuln[vulnerability] = host['data'][-1]['vulns'][j]['summary'] 
+        """
+               
+        
+        #print(vuln)  # Stampa ogni vulnerabilità per il debug
+        
 
         """ 
-        vulnerabilities = []
-        for vulnerability in host['vulns']:
-            print(vulnerability)  # Stampa ogni vulnerabilità per il debug
+        #cheis = (host['data'][1]['vulns'].keys())
+        for i in  host['data']:
+            #print(i)
+            #print(host['data'][-1]['vulns'].keys())
+            lista_vuln = list(host['data'][-1]['vulns'].keys())
+            for j in lista_vuln:
+                vuln = {'Vuln_ID:' }
+                #print("VULN_ID : ", j)
+                #print("\n")
+                #print("SUMMARY: ",host['data'][-1]['vulns'][j]['summary'])
+                return {
+                    'ip': host['ip_str'],
+                    'port': host['ports'],
+                    'country_name' : host['country_name'],
+                    'city' : host['city'],
+                    'os' : host['os'],
+                    'domains' : host['domains'],
+                    'vulnerabilities': host['vulns'],
+                    'Vuln_ID': j,
+                    'summary' : host['data'][-1]['vulns'][j]['summary'],
+                    
+                 }
         """
-            
+        return {
+                    'ip': host['ip_str'],
+                    'port': host['ports'],
+                    'country_name' : host['country_name'],
+                    'city' : host['city'],
+                    'os' : host['os'],
+                    'domains' : host['domains'],
+                    'vulnerabilities': host['vulns']
+                 }, vuln
+        #cheis = host['data']
+        #print(cheis)
+        
+        """ 
+        keys = list(host['data'][3]['vulns'].keys())
+        print(keys)
+        for i in keys: 
+            #print(host['data'][3]['vulns'][i])
+            print(host['data'][3]['vulns'][i]['summary'])
+        
 
         return {
             'ip': host['ip_str'],
             'port': host['ports'],
+            'country_name' : host['country_name'],
+            'city' : host['city'],
+            'os' : host['os'],
+            'domains' : host['domains'],
+            'vulnerabilities': host['vulns'],
             'data': host['data'],
-            'vulnerabilities': host['vulns']
         }
+        """
     except shodan.APIError as e:
         return {'error': str(e)}
 
@@ -114,10 +201,10 @@ def device_info():
         ip_address = request.form['ip_address']
 
         # Otteniamo informazioni dettagliate sul dispositivo
-        device_info = get_device_info(ip_address)
+        device_info, vuln = get_device_info(ip_address)
         
 
-        return render_template('results.html', device_info=device_info)
+        return render_template('results.html', device_info=device_info, context = vuln)
 
     return render_template('index.html')
 
@@ -191,7 +278,8 @@ def search():
         return ({'error': 'Latitude and longitude parameters are required'}), 400
     
     devices = shodan_search(latitude, longitude)
-    return (devices)
+    #return (devices)
+    return render_template('results_geo.html', devices=devices)
 
 
 @app.route('/create_alert', methods=['POST']) 

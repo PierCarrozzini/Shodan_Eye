@@ -13,21 +13,33 @@
 
         <div class="contenuto"> 
             <ul>
-                <h2>Results based on Geo-Tag:</h2>
-                <br>
-          
-                {% if results %}
-                <h2>Search Results:</h2>
-                <ul>
-                    {% for result in results %}
-                    <li>{{ result.ip_str }}{% if result.portinfo %} - {{ result.portinfo.port }}{% endif %}</li>
+                <h1>Dettagli Vulnerabilità nel range selezionato:</h1>
+                
+                <table> 
+                    <tr>
+                        <th>IP: </th>
+                        <th>PORT:</th>
+                        <th>OS:</th>
+                        <th>LOCATION:</th>
+                        <th>VULNERABILITIES:</th>
+                    </tr>
+                    {% for device_info in devices %}
+                    <tr>
+                        <td><strong>  {{ device_info.ip }} </strong></td>
+                        <td><strong>  {{ device_info.port }} </strong></td>
+                        <td><strong>  {{ device_info.os }} </strong></td>
+                        <td><strong>  {{ device_info.location }} </strong></td>
+                        <td>
+                            
+                            {% for vuln in device_info.vulnerabilities %}
+                            {{vuln}}
+                            {% endfor %}
+                        
+                        </td>
+                    </tr>
                     {% endfor %}
-                </ul>
-                {% else %}
-                <p>No results found.</p>
-                {% endif %}        
-                   
-            </ul>       
+                </table>
+        </ul>   
         </div>
         <div class="backbutton"> 
         <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>
