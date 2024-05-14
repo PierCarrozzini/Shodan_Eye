@@ -192,7 +192,6 @@ def me_info():
         # Otteniamo informazioni dettagliate sul dispositivo
         device_info = get_me_info(ip_address)
         #salva l'ip sulla tabella history di postgres
-        save_ip(device_info['ip'])
         return render_template('results_me.html', device_info=device_info)
 
     return render_template('index.html')
