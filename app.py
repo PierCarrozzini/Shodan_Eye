@@ -3,33 +3,7 @@ import requests
 import shodan
 import geocoder 
 import subprocess
-import psycopg2
 
-######################################################  TEST  #############
-# Connect to the database 
-conn = psycopg2.connect(database="flask_db", user="postgres", 
-                        password="postgres", host="localhost", port="5432") 
-  
-# create a cursor 
-cur = conn.cursor() 
-  
-# if you already have any table or not id doesnt matter this  
-# will create a products table for you. 
-cur.execute( 
-    '''CREATE TABLE IF NOT EXISTS history (id serial PRIMARY KEY, ip_address inet);''') 
-  
-# Insert some data into the table 
-cur.execute( 
-    '''INSERT INTO history (ip_address) VALUES ('192.168.1.1'::INET);''') 
-  
-# commit the changes 
-conn.commit() 
-  
-# close the cursor and connection 
-cur.close() 
-conn.close() 
-
-######################################################  FINE TEST  #############
 
 url = 'https://api.ipify.org?format=json' #to retrieve public ip_addr 
 
@@ -223,19 +197,6 @@ def me_info():
 
     return render_template('index.html')
 
-def save_ip(ip):
-    # create a cursor 
-    cur = conn.cursor() 
-
-    # Insert some data into the table 
-    cur.execute( '''INSERT INTO history (ip_address) VALUES ({ip}::INET);''') 
-  
-    # commit the changes 
-    conn.commit() 
-  
-    # close the cursor and connection 
-    cur.close() 
-    conn.close() 
 
 def shodan_search(latitude, longitude):
     try:
